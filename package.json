@@ -1,0 +1,23 @@
+{
+  "name": "book_store",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=production node src/server.js",
+    "dev": "node --env-file=.env src/server.js"
+  },
+  "keywords": [],
+  "author": "Anna Ståhlberg",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.1",
+    "mysql2": "^3.11.5"
+  }
+}

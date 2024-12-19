@@ -1,0 +1,18 @@
+
+header {
+  background-color: rgb(35, 69, 95);
+  height: 150px;
+}
+
+footer {
+  color:bisque;
+  background-color: rgb(35, 69, 95);
+  height: 25px;
+  padding: 10px;
+}
+
+#contactForm fieldset {
+  padding: 30px;
+  background-color:rgb(248, 131, 77);
+  display: grid;
+}
