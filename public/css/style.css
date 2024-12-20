@@ -16,3 +16,11 @@ footer {
   background-color:rgb(82, 108, 128);
   display: grid;
 }
+
+#subjectButton {
+  background: none; 
+  border: none; 
+  color: blue; 
+  text-decoration: underline; 
+  cursor: pointer;
+}

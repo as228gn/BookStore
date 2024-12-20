@@ -1,0 +1,14 @@
+<h1>Subjects</h1>
+<ul>
+  <% subjects.forEach(subject => { %>
+    <li>
+      <form action="/books/subject" method="POST">
+        <input type="hidden" name="subject" value="<%= subject.subject %>">
+        <button id="subjectButton" type="submit">
+          <%= subject.subject %>
+        </button>
+      </form>
+    </li>
+  <% }) %>
+</ul>
+

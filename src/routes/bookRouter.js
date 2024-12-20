@@ -11,4 +11,9 @@ export const router = express.Router()
 
 const controller = new BookController()
 
-router.get('/bookSearch', (req, res, next) => controller.bookSearch(req, res, next))
+router.get('/bookStore', (req, res, next) => controller.bookStart(req, res, next))
+
+router.get('/subject', (req, res, next) => controller.searchBySubject(req, res, next))
+router.post('/subject', (req, res, next) => controller.postSearchBySubject(req, res, next))
+
+//router.get('/showBooks', (req, res, next) => controller.showBooks(req, res, next))
