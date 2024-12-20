@@ -1,5 +1,8 @@
-
-
+/**
+ * @file This module contains the configuration for the Mysql2 Database.
+ * @module Mysql2
+ * @author Anna Ståhlberg
+ */
 
 // Importera dotenv och mysql2 med ESM-syntax
 import dotenv from 'dotenv'
