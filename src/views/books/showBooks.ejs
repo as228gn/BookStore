@@ -1,7 +1,18 @@
 <ul>
-  <% books.forEach(book=> { %>
+  <% viewData.books.forEach(book=> { %>
     <li>
       <%= book.title %>
     </li>
     <% }) %>
 </ul>
+
+<div id="paging">
+  <div>Page:</div>
+  <div>
+    <% for (let i=1; i <=viewData.pages; i++) {%>
+      <a href="/books/subject/<%=viewData.subject%>/<%= i %>">
+        <%= i %>
+      </a>
+      <% } %>
+  </div>
+</div>

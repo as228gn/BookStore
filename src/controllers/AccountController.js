@@ -87,7 +87,7 @@ export class AccountController {
 
         // Inloggning lyckades
         console.log('Inloggning lyckades:', existingUser.email);
-        res.redirect('../books/bookSearch'); // Omdirigera till en skyddad sida
+        res.redirect('../books/bookStore'); // Omdirigera till en skyddad sida
     } catch (error) {
         console.error('Fel vid inloggning:', error);
         res.status(500).send('Ett fel uppstod. Försök igen senare.');

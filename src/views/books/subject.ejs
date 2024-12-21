@@ -2,12 +2,7 @@
 <ul>
   <% subjects.forEach(subject => { %>
     <li>
-      <form action="/books/subject" method="POST">
-        <input type="hidden" name="subject" value="<%= subject.subject %>">
-        <button id="subjectButton" type="submit">
-          <%= subject.subject %>
-        </button>
-      </form>
+      <a href="/books/subject/<%= subject.subject %>"><%= subject.subject %></a>
     </li>
   <% }) %>
 </ul>
