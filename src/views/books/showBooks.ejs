@@ -1,9 +1,16 @@
-<ul>
-  <% viewData.books.forEach(book=> { %>
-    <li>
-      <%= book.title %>
+
+<ul id="outerBooks">
+  <% viewData.books.forEach(book => { %>
+    <li id="innerBooks">
+      <strong>Title:</strong> <%= book.title %><br>
+      <strong>Author:</strong> <%= book.author %><br>
+      <strong>Price:</strong> <%= book.price %> SEK
+      <form method="post" action="books/cart">
+        <input type="hidden" name="isbn" value="<%= book.isbn %>">
+        <button>Add To Cart</button>
+      </form>
     </li>
-    <% }) %>
+  <% }) %>
 </ul>
 
 <div id="paging">

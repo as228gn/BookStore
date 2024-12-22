@@ -24,3 +24,22 @@ footer {
   text-decoration: underline; 
   cursor: pointer;
 }
+
+  #outerBooks {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  #innerBooks {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+
+  li strong {
+    display: inline-block;
+    width: 80px;
+    font-weight: bold;
+  }
+

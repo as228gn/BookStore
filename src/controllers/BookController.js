@@ -48,7 +48,7 @@ export class BookController {
   async getBooksBySubject(req, res) {
     const subject = req.params.id
     const page = parseInt(req.params.page) || 1
-    const limit = 10
+    const limit = 5
     const offset = (page - 1) * limit
 
     const query = `SELECT * FROM books WHERE subject = ? ORDER BY title LIMIT ? OFFSET ?`
@@ -74,5 +74,10 @@ export class BookController {
       res.status(500).json({ error: 'Failed to fetch books.' });
     }
 
+  }
+
+  async addToCart(req, res) {
+    console.log(req.body)
+    console.log(req.session.userid)
   }
 }

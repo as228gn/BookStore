@@ -84,6 +84,7 @@ export class AccountController {
             res.status(400).send('Felaktig e-postadress eller lösenord.');
             return;
         }
+        req.session.userid = existingUser.userid
 
         // Inloggning lyckades
         console.log('Inloggning lyckades:', existingUser.email);
@@ -93,4 +94,27 @@ export class AccountController {
         res.status(500).send('Ett fel uppstod. Försök igen senare.');
     }
 }
+
+  /**
+   * Function that logout a user.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async logOut (req, res, next) {
+    try {
+      if (!req.session.userid) {
+        const error = new Error('Not Found')
+        error.status = 404
+        throw error
+      }
+      delete req.session.userid
+
+      req.session.flash = { type: 'success', text: 'Logout were successfull' }
+      res.redirect('../')
+    } catch (error) {
+      next(error)
+    }
+  }
 }
