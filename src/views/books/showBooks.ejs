@@ -7,6 +7,7 @@
       <strong>Price:</strong> <%= book.price %> SEK
       <form method="post" action="books/cart">
         <input type="hidden" name="isbn" value="<%= book.isbn %>">
+        <input type="hidden" name="redirectUrl" value="<%= viewData.currentUrl %>">
         <button>Add To Cart</button>
       </form>
     </li>

@@ -50,6 +50,7 @@ export class BookController {
     const page = parseInt(req.params.page) || 1
     const limit = 5
     const offset = (page - 1) * limit
+    const currentUrl = req.originalUrl
 
     const query = `SELECT * FROM books WHERE subject = ? ORDER BY title LIMIT ? OFFSET ?`
     const countQuery = `SELECT COUNT(*) AS total FROM books WHERE subject = ?`
@@ -65,7 +66,8 @@ export class BookController {
         subject: subject,
         currentPage: page,
         pages: totalPages, 
-        totalBooks: total
+        totalBooks: total,
+        currentUrl: currentUrl
       }
 
       res.render('books/showBooks', {viewData})
@@ -77,7 +79,21 @@ export class BookController {
   }
 
   async addToCart(req, res) {
-    console.log(req.body)
-    console.log(req.session.userid)
+    const isbn = req.body.isbn
+    const userId = req.session.userid
+    const redirectUrl = req.body.redirectUrl
+
+    const query = `INSERT INTO cart (userId, isbn, qty) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE qty = qty + 1`
+
+try {
+    // Kör SQL-frågan
+    await db.query(query, [userId, isbn])
+    req.session.flash = { type: 'success', text: 'Book added to cart.' }
+    res.redirect(redirectUrl)
+} catch (error) {
+    console.error('Error updating cart:', error.message);
+    res.status(500).render('error', { message: 'Ett fel uppstod när boken skulle läggas till i kundvagnen.' })
+}
+
   }
 }
