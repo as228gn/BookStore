@@ -66,7 +66,7 @@ export class AccountController {
         const { email, password } = req.body;
 
         // Kontrollera om användaren finns
-        const [user] = await db.query('SELECT * FROM members WHERE email = ?', [email]);
+        const [user] = await db.query('SELECT * FROM members WHERE email = ?', [email])
 
         if (user.length === 0) {
             // Ingen användare hittades

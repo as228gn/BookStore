@@ -1,0 +1,20 @@
+<h1>Check Out</h1>
+
+<ul id="outerBooks">
+  <% viewData.books.forEach(book => { %>
+    <li id="innerBooks">
+      <strong>Title:</strong> <%= book.title %><br>
+      <strong>Author:</strong> <%= book.author %><br>
+      <strong>Quantity:</strong> <%= book.Quantity %><br>
+      <strong>Price:</strong> <%= book.BookPrice %> SEK <br>
+      <strong>Total:</strong> <%= book.TotalPricePerBook %> SEK <br>
+    </li>
+  <% }) %>
+</ul>
+<div>
+  <strong>Total:</strong>
+  <%= viewData.books[0] ? viewData.books[0].Total : 0 %> SEK
+</div>
+<form method="post" action="books/checkOut">
+  <button>Proceed to CheckOut</button>
+</form>
