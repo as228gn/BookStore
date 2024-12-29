@@ -1,0 +1,22 @@
+<h1>Invoice for order: <%= viewData.orderId %></h1>
+
+<h3>Shipping Address:</h3>
+<div>Name: <%= viewData.address.fname %> <%= viewData.address.lname %></div>
+<div>Address: <%= viewData.address.address %></div>
+<div>         <%= viewData.address.city %></div>
+<div>         <%= viewData.address.zip %></div>
+<ul id="outerBooks">
+  <% viewData.orderDetails.forEach(book => { %>
+    <li id="innerBooks">
+      <strong>Title:</strong> <%= book.title %><br>
+      <strong>Author:</strong> <%= book.author %><br>
+      <strong>Quantity:</strong> <%= book.qty %><br>
+      <strong>Price:</strong> <%= book.price %> SEK <br>
+      <strong>Total:</strong> <%= book.amount %> SEK <br>
+    </li>
+  <% }) %>
+</ul>
+<div>
+  <strong>Total:</strong>
+  <%= viewData.totalAmount %> SEK
+</div>

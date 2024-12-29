@@ -21,5 +21,9 @@ router.post('/cart', (req, res, next) => controller.addToCart(req, res, next))
 
 router.get('/checkOut', (req, res, next) => controller.checkOut(req, res, next))
 router.post('/checkOut', (req, res, next) => controller.postCheckOut(req, res, next))
-//router.post('/subject', (req, res, next) => controller.postSearchBySubject(req, res, next))
+
+router.get('/authorTitle', (req, res, next) => controller.getAuthorTitlePage(req, res, next))
+
+router.get('/search', (req, res, next) => controller.getBooksBySearch(req, res, next))
+
  
