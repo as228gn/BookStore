@@ -96,21 +96,61 @@ export class BookController {
 * @param {object} res - Express response object.
 */
   async getBooksBySearch(req, res) {
-    const searchCriteria = req.query.searchCriteria
-    const searchInput = req.query.searchInput
-    const page = parseInt(req.params.page) || 1
-    const limit = 5
-    const offset = (page - 1) * limit
+    try {
 
-    if (searchCriteria == 'author') {
-      const query = `SELECT * FROM books WHERE author LIKE ? ORDER BY title LIMIT ? OFFSET ?`
-      const [results] = await db.query(query, [searchInput, limit, offset])
-      console.log(results)
-    } else if (searchCriteria == 'title') {
+      const searchCriteria = req.query.searchCriteria
+      const searchInput = req.query.searchInput
+      const page = parseInt(req.query.page) || 1
+      const limit = 5
+      const offset = (page - 1) * limit
+      const currentUrl = req.originalUrl
+      const search = '%' + searchInput + '%'
 
+      if (searchCriteria == 'author') {
+        const query = `SELECT * FROM books WHERE author LIKE ? ORDER BY title LIMIT ? OFFSET ?`
+        const countQuery = `SELECT COUNT(*) AS total FROM books WHERE author LIKE ?`
+
+        const [results] = await db.query(query, [search, limit, offset])
+        const [[{ total }]] = await db.query(countQuery, [search])
+
+        const totalPages = Math.ceil(total / limit)
+
+        const viewData = {
+          books: results,
+          currentPage: page,
+          pages: totalPages,
+          totalBooks: total,
+          searchCriteria: searchCriteria,
+          searchInput: searchInput,
+          currentUrl: currentUrl
+        }
+        res.render('books/searchResult', { viewData })
+
+      } else if (searchCriteria == 'title') {
+        const query = `SELECT * FROM books WHERE title LIKE ? ORDER BY title LIMIT ? OFFSET ?`
+        const countQuery = `SELECT COUNT(*) AS total FROM books WHERE title LIKE ?`
+
+        const [results] = await db.query(query, [search, limit, offset])
+        const [[{ total }]] = await db.query(countQuery, [search])
+
+        const totalPages = Math.ceil(total / limit)
+
+        const viewData = {
+          books: results,
+          currentPage: page,
+          pages: totalPages,
+          totalBooks: total,
+          searchCriteria: searchCriteria,
+          searchInput: searchInput,
+          currentUrl: currentUrl
+        }
+        res.render('books/searchResult', { viewData })
+      }
+    } catch (error) {
+      console.error('Error fetching books:', error.message);
+      res.status(500).render('error', { message: 'Error fetching books.' })
     }
-    
-    res.render('books/authorTitle')
+
   }
 
   async addToCart(req, res) {
@@ -118,10 +158,14 @@ export class BookController {
     const userId = req.session.userid
     const redirectUrl = req.body.redirectUrl
 
+    if (userId == null) {
+      req.session.flash = { type: 'success', text: 'You need to log in to buy a book.' }
+      res.redirect(redirectUrl)
+    }
+
     const query = `INSERT INTO cart (userId, isbn, qty) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE qty = qty + 1`
 
     try {
-      // Kör SQL-frågan
       await db.query(query, [userId, isbn])
       req.session.flash = { type: 'success', text: 'Book added to cart.' }
       res.redirect(redirectUrl)
@@ -155,8 +199,6 @@ export class BookController {
       console.error('Error updating cart:', error.message);
       res.status(500).render('error', { message: 'Ett fel uppstod när boken skulle läggas till i kundvagnen.' })
     }
-
-    res.render('books/checkOut')
   }
 
   async postCheckOut(req, res) {
