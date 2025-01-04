@@ -1,11 +1,10 @@
-
 header {
   background-color: rgb(35, 69, 95);
   height: 150px;
 }
 
 footer {
-  color:bisque;
+  color: bisque;
   background-color: rgb(35, 69, 95);
   height: 25px;
   padding: 10px;
@@ -13,33 +12,41 @@ footer {
 
 #contactForm fieldset {
   padding: 30px;
-  background-color:rgb(82, 108, 128);
+  background-color: rgb(82, 108, 128);
   display: grid;
 }
 
-#subjectButton {
-  background: none; 
-  border: none; 
-  color: blue; 
-  text-decoration: underline; 
+#linkButton {
+  background: none;
+  border: none;
+  color: #007bff;
+  text-decoration: underline;
   cursor: pointer;
 }
 
-  #outerBooks {
-    list-style-type: none;
-    padding: 0;
-  }
+#linkButton:hover {
+  color: #0056b3;
+}
 
-  #innerBooks {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
+ul {
+  list-style-type: none;
+  padding: 0;
+}
 
-  li strong {
-    display: inline-block;
-    width: 80px;
-    font-weight: bold;
-  }
+#outerBooks {
+  list-style-type: none;
+  padding: 0;
+}
 
+#innerBooks {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+li strong {
+  display: inline-block;
+  width: 80px;
+  font-weight: bold;
+}

@@ -35,22 +35,16 @@ export class AccountController {
       const [existingUser] = await db.query('SELECT email FROM members WHERE email = ?', [email]);
         
         if (existingUser.length > 0) {
-            // E-post finns redan
-            console.error('E-postadressen används redan.');
-            res.status(400).send('E-postadressen används redan.');
-            return;
+           throw error
         }
 
-      // Hash the password before saving
       const hashedPassword = await bcrypt.hash(password, 10)
 
-      // Insert the new user into the database
       await db.query('INSERT INTO members (fname, lname, address, city, zip, phone, email, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [fname, lname, address, city, zip, phone, email, hashedPassword])
-      console.log("registartion succeded")
+      req.session.flash = { type: 'success', text: 'You have registered successfully!' }
       res.redirect('./login')
     } catch (error) {
-      console.error('Error during registration:', error)
-
+      req.session.flash = { type: 'success', text: 'Registration failed email already exists' }
       res.redirect('./register')
     }
   }
@@ -65,33 +59,25 @@ export class AccountController {
     try {
         const { email, password } = req.body;
 
-        // Kontrollera om användaren finns
         const [user] = await db.query('SELECT * FROM members WHERE email = ?', [email])
 
         if (user.length === 0) {
-            // Ingen användare hittades
-            console.error('Ingen användare med den här e-postadressen.');
-            res.status(400).send('Felaktig e-postadress eller lösenord.');
-            return;
+            throw error
         }
 
         const existingUser = user[0];
 
-        // Kontrollera om lösenordet stämmer
-        const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+        const isPasswordValid = await bcrypt.compare(password, existingUser.password)
         if (!isPasswordValid) {
-            console.error('Fel lösenord.');
-            res.status(400).send('Felaktig e-postadress eller lösenord.');
-            return;
+          throw error
         }
         req.session.userid = existingUser.userid
 
-        // Inloggning lyckades
-        console.log('Inloggning lyckades:', existingUser.email);
-        res.redirect('../books/bookStore'); // Omdirigera till en skyddad sida
+        req.session.flash = { type: 'success', text: 'Login were successfull' }
+        res.redirect('../books/bookStore')
     } catch (error) {
-        console.error('Fel vid inloggning:', error);
-        res.status(500).send('Ett fel uppstod. Försök igen senare.');
+      req.session.flash = { type: 'success', text: 'Wrong password or email, please try again' }
+      res.redirect('../')
     }
 }
 
