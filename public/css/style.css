@@ -1,13 +1,18 @@
+body {
+  background-color: #dee8f2;
+}
 header {
   background-color: rgb(35, 69, 95);
-  height: 150px;
+  height: 155px;
+  padding: 15px;
 }
 
-footer {
-  color: bisque;
-  background-color: rgb(35, 69, 95);
-  height: 25px;
-  padding: 10px;
+a:hover {
+  color: #0056b3;
+}
+
+.flash {
+  color: rgb(35, 69, 95);
 }
 
 #contactForm fieldset {
@@ -29,11 +34,6 @@ footer {
 }
 
 ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-#outerBooks {
   list-style-type: none;
   padding: 0;
 }

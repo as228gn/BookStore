@@ -42,7 +42,7 @@ export class AccountController {
 
       await db.query('INSERT INTO members (fname, lname, address, city, zip, phone, email, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [fname, lname, address, city, zip, phone, email, hashedPassword])
       req.session.flash = { type: 'success', text: 'You have registered successfully!' }
-      res.redirect('./login')
+      res.redirect('../')
     } catch (error) {
       req.session.flash = { type: 'success', text: 'Registration failed email already exists' }
       res.redirect('./register')
@@ -76,13 +76,13 @@ export class AccountController {
         req.session.flash = { type: 'success', text: 'Login were successfull' }
         res.redirect('../books/bookStore')
     } catch (error) {
-      req.session.flash = { type: 'success', text: 'Wrong password or email, please try again' }
+      req.session.flash = { text: 'Wrong password or email, please try again' }
       res.redirect('../')
     }
 }
 
   /**
-   * Function that logout a user.
+   * Function that logout a member.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.

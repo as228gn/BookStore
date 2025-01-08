@@ -22,7 +22,7 @@ export class BookController {
   }
 
   /**
-  * Returns a HTML form for the startpage of the bookstore.
+  * Returns the page for showing the subjects.
   *
   * @param {object} req - Express request object.
   * @param {object} res - Express response object.
@@ -32,15 +32,15 @@ export class BookController {
 
     try {
       const [results] = await db.query(query);
-      res.render('books/subject', { subjects: results });
+      res.render('books/subject', { subjects: results })
     } catch (error) {
-      console.error('Error fetching subjects: ', error.message);
-      res.status(500).render('error', { message: 'Failed to fetch subjects.' });
+      req.session.flash = { text: 'Failed to fetch subjects, please try again.' }
+      res.redirect('books/bookStore')
     }
   }
 
   /**
-  * Returns a HTML form for the startpage of the bookstore.
+  * Shows the books in the choosen subject.
   *
   * @param {object} req - Express request object.
   * @param {object} res - Express response object.
@@ -72,25 +72,24 @@ export class BookController {
 
       res.render('books/showBooks', { viewData })
     } catch (error) {
-      console.error('Error fetching books: ', error.message);
-      res.status(500).json({ error: 'Failed to fetch books.' });
+      req.session.flash = { text: 'Failed to fetch books, please try again.' }
+      res.redirect('books/bookStore')
     }
 
   }
 
   /**
- * Returns a HTML form for the startpage of the bookstore.
+ * Returns a HTML form for searching a book by author or title.
  *
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
  */
   async getAuthorTitlePage(req, res) {
-
     res.render('books/authorTitle')
   }
 
   /**
-* Returns a HTML form for the startpage of the bookstore.
+* Shows the book by the choosen author/title.
 *
 * @param {object} req - Express request object.
 * @param {object} res - Express response object.
@@ -147,31 +146,37 @@ export class BookController {
         res.render('books/searchResult', { viewData })
       }
     } catch (error) {
-      console.error('Error fetching books:', error.message);
-      res.status(500).render('error', { message: 'Error fetching books.' })
+      req.session.flash = { text: 'Failed to show books, please try again.' }
+      res.redirect('books/bookStore')
     }
 
   }
 
+/**
+* Adds the choosen book to the cart.
+*
+* @param {object} req - Express request object.
+* @param {object} res - Express response object.
+*/
   async addToCart(req, res) {
     const isbn = req.body.isbn
     const userId = req.session.userid
     const redirectUrl = req.body.redirectUrl
 
-    if (userId == null) {
-      req.session.flash = { type: 'success', text: 'You need to log in to buy a book.' }
-      res.redirect(redirectUrl)
-    }
-
-    const query = `INSERT INTO cart (userId, isbn, qty) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE qty = qty + 1`
-
     try {
+      if (userId == null) {
+        throw error
+      }
+
+      const query = `INSERT INTO cart (userId, isbn, qty) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE qty = qty + 1`
+
+
       await db.query(query, [userId, isbn])
-      req.session.flash = { type: 'success', text: 'Book added to cart.' }
+      req.session.flash = { text: 'Book added to cart.' }
       res.redirect(redirectUrl)
     } catch (error) {
-      console.error('Error updating cart:', error.message);
-      res.status(500).render('error', { message: 'Ett fel uppstod när boken skulle läggas till i kundvagnen.' })
+      req.session.flash = { text: 'You need to log in to buy a book.' }
+      res.redirect('../')
     }
 
   }
@@ -196,8 +201,8 @@ export class BookController {
 
       res.render('books/checkOut', { viewData })
     } catch (error) {
-      console.error('Error updating cart:', error.message);
-      res.status(500).render('error', { message: 'Ett fel uppstod när boken skulle läggas till i kundvagnen.' })
+      req.session.flash = { text: 'Something went wrong, please try again.' }
+      res.redirect('books/bookStore')
     }
   }
 
@@ -231,8 +236,8 @@ export class BookController {
 
       res.render('books/invoice', { viewData })
     } catch (error) {
-      console.error('Error updating cart:', error.message);
-      res.status(500).render('error', { message: 'Ett fel uppstod när boken skulle läggas till i kundvagnen.' })
+      req.session.flash = { text: 'You need to log in to buy a book.' }
+      res.redirect('../')
     }
   }
 
@@ -244,8 +249,7 @@ export class BookController {
       return results[0]
 
     } catch (error) {
-      console.error('Error fetching user address:', error.message)
-      throw error
+      req.session.flash = { text: 'Something went wrong, please try again.' }
     }
   }
 }

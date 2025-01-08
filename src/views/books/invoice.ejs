@@ -5,7 +5,7 @@
 <div>Address: <%= viewData.address.address %></div>
 <div>         <%= viewData.address.city %></div>
 <div>         <%= viewData.address.zip %></div>
-<ul id="outerBooks">
+<ul>
   <% viewData.orderDetails.forEach(book => { %>
     <li id="innerBooks">
       <strong>Title:</strong> <%= book.title %><br>
