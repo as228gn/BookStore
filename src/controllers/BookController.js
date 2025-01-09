@@ -12,7 +12,7 @@ import db from '../config/db.js'
 export class BookController {
 
   /**
-   * Returns a HTML form for the startpage of the bookstore.
+   * Renders a page with searchoptions for books.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -22,7 +22,7 @@ export class BookController {
   }
 
   /**
-  * Returns the page for showing the subjects.
+  * Renders a page with the subjects to choose from.
   *
   * @param {object} req - Express request object.
   * @param {object} res - Express response object.
@@ -40,7 +40,7 @@ export class BookController {
   }
 
   /**
-  * Shows the books in the choosen subject.
+  * Renders a page with the books of the choosen subject.
   *
   * @param {object} req - Express request object.
   * @param {object} res - Express response object.
@@ -79,21 +79,21 @@ export class BookController {
   }
 
   /**
- * Returns a HTML form for searching a book by author or title.
- *
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- */
+   * Renders a page for searching a book by author or title.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   */
   async getAuthorTitlePage(req, res) {
     res.render('books/authorTitle')
   }
 
   /**
-* Shows the book by the choosen author/title.
-*
-* @param {object} req - Express request object.
-* @param {object} res - Express response object.
-*/
+  * Shows the book by the choosen author/title.
+  *
+  * @param {object} req - Express request object.
+  * @param {object} res - Express response object.
+  */
   async getBooksBySearch(req, res) {
     try {
 
@@ -110,6 +110,10 @@ export class BookController {
         const countQuery = `SELECT COUNT(*) AS total FROM books WHERE author LIKE ?`
 
         const [results] = await db.query(query, [search, limit, offset])
+
+        if (results.length === 0) {
+          throw error
+        }
         const [[{ total }]] = await db.query(countQuery, [search])
 
         const totalPages = Math.ceil(total / limit)
@@ -130,6 +134,9 @@ export class BookController {
         const countQuery = `SELECT COUNT(*) AS total FROM books WHERE title LIKE ?`
 
         const [results] = await db.query(query, [search, limit, offset])
+        if (results.length === 0) {
+          throw error
+        }
         const [[{ total }]] = await db.query(countQuery, [search])
 
         const totalPages = Math.ceil(total / limit)
@@ -146,18 +153,17 @@ export class BookController {
         res.render('books/searchResult', { viewData })
       }
     } catch (error) {
-      req.session.flash = { text: 'Failed to show books, please try again.' }
-      res.redirect('books/bookStore')
+      req.session.flash = { text: 'No books matches your search please try again.' }
+      res.redirect('./authorTitle')
     }
-
   }
 
-/**
-* Adds the choosen book to the cart.
-*
-* @param {object} req - Express request object.
-* @param {object} res - Express response object.
-*/
+  /**
+  * Adds the choosen book to the cart.
+  *
+  * @param {object} req - Express request object.
+  * @param {object} res - Express response object.
+  */
   async addToCart(req, res) {
     const isbn = req.body.isbn
     const userId = req.session.userid
@@ -182,7 +188,7 @@ export class BookController {
   }
 
   /**
-  * Returns a HTML form for the startpage of the bookstore.
+  * Sends the books in the cart to checkout.
   *
   * @param {object} req - Express request object.
   * @param {object} res - Express response object.
@@ -206,16 +212,30 @@ export class BookController {
     }
   }
 
+  /**
+  * Checks out the books and provides an invoice.
+  *
+  * @param {object} req - Express request object.
+  * @param {object} res - Express response object.
+  */
   async postCheckOut(req, res) {
     const userId = req.session.userid
     const adress = await this.getUserAddress(userId)
-
-    const queryOrder = `INSERT INTO orders (userid, created, shipAddress, shipCity, shipZip) VALUES(?, CURDATE(), ?, ?, ?)`
-
+    
     try {
+      const queryOrder = `INSERT INTO orders (userid, created, shipAddress, shipCity, shipZip) VALUES(?, CURDATE(), ?, ?, ?)`
       const [results] = await db.query(queryOrder, [userId, adress.address, adress.city, adress.zip])
 
       const orderId = results.insertId
+
+      const [orderResults] = await db.query('SELECT created FROM orders WHERE ono = ?', [orderId])
+      const currentDate = orderResults[0].created
+      const options = { weekday: 'short', month: 'short', day: '2-digit' }
+      const formattedDate = currentDate.toLocaleDateString('en-US', options)
+
+      const nextWeekDate = currentDate
+      nextWeekDate.setDate(currentDate.getDate() + 7)
+      const formattedNextDate = currentDate.toLocaleDateString('en-US', options)
 
       await db.query(
         `INSERT INTO odetails (ono, isbn, qty, amount) SELECT ?, c.isbn, c.qty, (c.qty * b.price) FROM Cart c JOIN Books b ON c.isbn = b.isbn WHERE c.userid = ?`, [orderId, userId])
@@ -231,7 +251,9 @@ export class BookController {
         address: adress,
         orderDetails: orderDetails,
         totalAmount: totalAmount,
-        orderId: orderId
+        orderId: orderId,
+        currentDate: formattedDate,
+        nextWeekDate: formattedNextDate
       }
 
       res.render('books/invoice', { viewData })
@@ -241,6 +263,11 @@ export class BookController {
     }
   }
 
+  /**
+  * Collects the user adress from the database.
+  *
+  * @param userId - The userId to collect the adress to.
+  */
   async getUserAddress(userId) {
     const query = `SELECT fname, lname, address, city, zip FROM Members WHERE userid = ?`
     try {

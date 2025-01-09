@@ -1,18 +1,20 @@
-<h1>Check Out</h1>
+<h1>Your Cart</h1>
 
 <ul>
   <% viewData.books.forEach(book => { %>
     <li id="innerBooks">
-      <strong>Title:</strong> <%= book.title %><br>
-      <strong>Author:</strong> <%= book.author %><br>
-      <strong>Quantity:</strong> <%= book.Quantity %><br>
-      <strong>Price:</strong> <%= book.BookPrice %> SEK <br>
-      <strong>Total:</strong> <%= book.TotalPricePerBook %> SEK <br>
+      <ul>
+        <li><span class="bold-text">Title:</span> <%= book.title %></li>
+        <li><span class="bold-text">Author:</span> <%= book.author %></li>
+        <li><span class="bold-text">Quantity:</span> <%= book.Quantity %></li>
+        <li><span class="bold-text">Price:</span> <%= book.BookPrice %> SEK</li>
+        <li><span class="bold-text">Total:</span> <%= book.TotalPricePerBook %> SEK</li>
+      </ul>
     </li>
   <% }) %>
 </ul>
 <div>
-  <strong>Total:</strong>
+  <div class="bold-text">Total:</div>
   <%= viewData.books[0] ? viewData.books[0].Total : 0 %> SEK
 </div>
 <form method="post" action="books/checkOut">

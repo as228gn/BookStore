@@ -28,7 +28,7 @@ export class AccountController {
    * @param {object} res - The Express response object.
    * @param {Function} next - The next middleware function.
    */
-   async postRegister(req, res, next) {
+   async postRegister(req, res) {
     try {
       const { fname, lname, address, city, zip, phone, email, password } = req.body
 
@@ -55,7 +55,7 @@ export class AccountController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-   async postLogin(req, res, next) {
+   async postLogin(req, res) {
     try {
         const { email, password } = req.body;
 

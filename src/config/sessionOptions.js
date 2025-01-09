@@ -2,7 +2,6 @@
  * @file This module contains the options object for the session middleware.
  * @module sessionOptions
  * @author Anna Ståhlberg
- * @see {@link https://github.com/expressjs/session}
  */
 
 export const sessionOptions = {

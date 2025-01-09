@@ -1,22 +1,26 @@
 <h1>Invoice for order: <%= viewData.orderId %></h1>
 
+<div>Order received at: <%= viewData.currentDate %></div>
+<div>Shipped at: <%= viewData.nextWeekDate %> </div>
 <h3>Shipping Address:</h3>
-<div>Name: <%= viewData.address.fname %> <%= viewData.address.lname %></div>
-<div>Address: <%= viewData.address.address %></div>
-<div>         <%= viewData.address.city %></div>
-<div>         <%= viewData.address.zip %></div>
+<ul>
+  <li><span class="bold-text">Name:</span> <%= viewData.address.fname %> <%= viewData.address.lname %></li>
+  <li><span class="bold-text">Address:</span> <%= viewData.address.address %></li>
+  <li><span class="bold-text">City:</span> <%= viewData.address.city %></li>
+  <li><span class="bold-text">Zip:</span> <%= viewData.address.zip %></li>
+</ul>
 <ul>
   <% viewData.orderDetails.forEach(book => { %>
-    <li id="innerBooks">
-      <strong>Title:</strong> <%= book.title %><br>
-      <strong>Author:</strong> <%= book.author %><br>
-      <strong>Quantity:</strong> <%= book.qty %><br>
-      <strong>Price:</strong> <%= book.price %> SEK <br>
-      <strong>Total:</strong> <%= book.amount %> SEK <br>
-    </li>
+    <ul id="innerBooks">
+      <li><span class="bold-text">Title:</span> <%= book.title %></li>
+      <li><span class="bold-text">Author:</span> <%= book.author %></li>
+      <li><span class="bold-text">Quantity:</span> <%= book.qty %></li>
+      <li><span class="bold-text">Price:</span> <%= book.price %> SEK</li>
+      <li><span class="bold-text">Total:</span> <%= book.amount %> SEK</li>
+    </ul>
   <% }) %>
 </ul>
 <div>
-  <strong>Total:</strong>
+  <p class="bold-text">Total:</p>
   <%= viewData.totalAmount %> SEK
 </div>

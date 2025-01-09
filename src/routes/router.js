@@ -16,7 +16,6 @@ router.use('/', homeRouter)
 router.use('/account', accountRouter)
 router.use('/books', bookRouter)
 
-// Catch 404 (ALWAYS keep this as the last route).
 router.use('*', (req, res, next) => {
   const statusCode = 404
   const error = new Error(http.STATUS_CODES[statusCode])

@@ -6,7 +6,7 @@
 
 export class HomeController {
   /**
-   * Renders a view and sends the rendered HTML string as an HTTP response.
+   * Renders the startview and sends the rendered HTML string as an HTTP response.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.

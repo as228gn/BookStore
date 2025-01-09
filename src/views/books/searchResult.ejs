@@ -3,27 +3,23 @@
 
 <ul>
   <% viewData.books.forEach(book => { %>
-    <li id="innerBooks">
-      <strong>Title:</strong> <%= book.title %><br>
-      <strong>Author:</strong> <%= book.author %><br>
-      <strong>Price:</strong> <%= book.price %> SEK<br>
+    <ul id="innerBooks">
+      <li><span class="bold-text">Title:</span> <%= book.title %></li>
+      <li><span class="bold-text">Author:</span> <%= book.author %></li>
+      <li><span class="bold-text">Price:</span> <%= book.price %> SEK</li>
       <form method="post" action="books/cart">
         <input type="hidden" name="isbn" value="<%= book.isbn %>">
         <input type="hidden" name="redirectUrl" value="<%= viewData.currentUrl %>">
         <button>Add To Cart</button>
       </form>
-    </li>
+    </ul>
   <% }) %>
 </ul>
 
-<div id="paging">
-  <div>Page:</div>
-  <div>
-    <% for (let i=1; i <=viewData.pages; i++) {%>
-      <a href="/books/search?searchCriteria=<%=viewData.searchCriteria%>&searchInput=<%=viewData.searchInput%>&page=<%=i%>">
-          <%= i %>
-    </a>
-    <% } %>
-  </div>
-  <br><br>
-</div>
+  <% if (viewData.currentPage > 1) { %>
+    <a href="/books/search?searchCriteria=<%=viewData.searchCriteria%>&searchInput=<%=viewData.searchInput%>&page=<%=viewData.currentPage - 1%>">Prev</a>
+  <% } %>
+  <% if (viewData.currentPage < viewData.pages) { %>
+    <a href="/books/search?searchCriteria=<%=viewData.searchCriteria%>&searchInput=<%=viewData.searchInput%>&page=<%=viewData.currentPage + 1%>">Next</a>
+  <% } %>
+  <div class="paging">Page <%=viewData.currentPage%> of <%=viewData.pages%></div>
