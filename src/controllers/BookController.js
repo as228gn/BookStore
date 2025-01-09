@@ -112,7 +112,7 @@ export class BookController {
         const [results] = await db.query(query, [search, limit, offset])
 
         if (results.length === 0) {
-          throw error
+          throw new Error('No books by that author')
         }
         const [[{ total }]] = await db.query(countQuery, [search])
 
@@ -135,7 +135,7 @@ export class BookController {
 
         const [results] = await db.query(query, [search, limit, offset])
         if (results.length === 0) {
-          throw error
+          throw new Error('No books matches that title')
         }
         const [[{ total }]] = await db.query(countQuery, [search])
 
@@ -153,7 +153,7 @@ export class BookController {
         res.render('books/searchResult', { viewData })
       }
     } catch (error) {
-      req.session.flash = { text: 'No books matches your search please try again.' }
+      req.session.flash = { text: error.message || 'Something went wrong, please try again.' }
       res.redirect('./authorTitle')
     }
   }
@@ -171,17 +171,17 @@ export class BookController {
 
     try {
       if (userId == null) {
-        throw error
+        throw new Error('You need to log on to buy a book')
       }
 
       const query = `INSERT INTO cart (userId, isbn, qty) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE qty = qty + 1`
 
 
       await db.query(query, [userId, isbn])
-      req.session.flash = { text: 'Book added to cart.' }
+      req.session.flash = { text: 'Book added to cart' }
       res.redirect(redirectUrl)
     } catch (error) {
-      req.session.flash = { text: 'You need to log in to buy a book.' }
+      req.session.flash = { text: error.message || 'Something went wrong, please try again.' }
       res.redirect('../')
     }
 
@@ -235,7 +235,7 @@ export class BookController {
 
       const nextWeekDate = currentDate
       nextWeekDate.setDate(currentDate.getDate() + 7)
-      const formattedNextDate = currentDate.toLocaleDateString('en-US', options)
+      const formattedNextDate = nextWeekDate.toLocaleDateString('en-US', options)
 
       await db.query(
         `INSERT INTO odetails (ono, isbn, qty, amount) SELECT ?, c.isbn, c.qty, (c.qty * b.price) FROM Cart c JOIN Books b ON c.isbn = b.isbn WHERE c.userid = ?`, [orderId, userId])
@@ -258,7 +258,7 @@ export class BookController {
 
       res.render('books/invoice', { viewData })
     } catch (error) {
-      req.session.flash = { text: 'You need to log in to buy a book.' }
+      req.session.flash = { text: 'You need to log in to buy a book' }
       res.redirect('../')
     }
   }
@@ -277,6 +277,7 @@ export class BookController {
 
     } catch (error) {
       req.session.flash = { text: 'Something went wrong, please try again.' }
+      res.redirect('books/bookStore')
     }
   }
 }

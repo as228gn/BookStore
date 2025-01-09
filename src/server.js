@@ -12,7 +12,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { sessionOptions } from './config/sessionOptions.js'
 import { router } from './routes/router.js'
-import db from './config/db.js';
+import db from './config/db.js'
 
 
 // Get the path of the current module's directory.
